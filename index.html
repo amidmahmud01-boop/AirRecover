@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AirRecover – Besser durch die Nase atmen</title>
+  <title>AirRecover – Besser atmen</title>
   <meta name="description" content="AirRecover Nasenpflaster: mehr Luft, besserer Schlaf, weniger Schnarchen. Moderne, clean gestaltete Produktseite." />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="site-header">
     <div class="container">
-      <div class="brand">
+      <a class="brand" href="#top" aria-label="Zur Startseite">
         <span class="brand-mark">AR</span>
         <span class="brand-name">AirRecover</span>
-      </div>
+      </a>
       <nav class="nav">
+        <a href="#shop">Shop</a>
         <a href="#product">Produkt</a>
         <a href="#benefits">Vorteile</a>
         <a href="#how">Anleitung</a>
@@ -33,7 +34,7 @@
     </div>
   </header>
 
-  <main>
+  <main id="top">
     <section class="hero">
       <div class="container hero-grid">
         <div class="hero-text">
@@ -63,10 +64,13 @@
             <p class="card-price">CHF 5.95</p>
             <ul class="card-list">
               <li>30 Nasenpflaster</li>
-              <li>2–5 Werktage Lieferzeit</li>
+              <li>1–2 Werktage Lieferzeit</li>
               <li>Risikofrei testen</li>
             </ul>
-            <a class="btn btn-primary js-open-cart" href="#">In den Warenkorb</a>
+            <div class="cart-cta">
+              <a class="btn btn-primary js-open-cart orange-btn" href="#">In den Warenkorb</a>
+              <img class="cart-cta-img" src="assets/pics/IMG_4656.jpg" alt="AirRecover Produktbild" />
+            </div>
             <p class="card-note">Kostenloser Versand ab 2 Packs</p>
           </div>
         </div>
@@ -140,7 +144,7 @@
             <span class="step-num">1</span>
             <div>
               <h3>Haut reinigen</h3>
-              <p>Für sicheren Halt die Nase reinigen und vollständig trocknen.</p>
+              <p>Für sicheren Halt die Nase mit warmem Wasser reinigen und vollständig trocknen.</p>
             </div>
           </div>
           <div class="step">
@@ -167,6 +171,12 @@
           <h2>Im Einsatz</h2>
           <p class="muted">Platzhalter für Produkt- und Lifestyle-Bilder.</p>
         </div>
+        <div class="gallery-video">
+          <video controls preload="metadata" poster="">
+            <source src="assets/video/airrecover-video.mp4" type="video/mp4" />
+            Dein Browser unterstützt das Video-Element nicht.
+          </video>
+        </div>
         <div class="gallery-grid">
           <div class="gallery-item">Bild 1</div>
           <div class="gallery-item">Bild 2</div>
@@ -185,7 +195,7 @@
             Entweder du atmest besser – oder du bekommst dein Geld zurück.
           </p>
         </div>
-        <a class="btn btn-primary" href="#">Jetzt bestellen</a>
+        <a class="btn btn-primary orange-btn" href="#">Jetzt bestellen</a>
       </div>
     </section>
 
