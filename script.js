@@ -107,6 +107,32 @@
     if (totalEl) totalEl.textContent = formatCHF(cart.total);
   }
 
+  async function startStripeCheckout(method, submitBtn) {
+    var cart = readCart();
+    var payload = {
+      qty: cart.qty,
+      method: method || "card"
+    };
+
+    var response = await fetch("/create-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    var data = await response.json();
+    if (data && data.checkoutUrl) {
+      window.location.href = data.checkoutUrl;
+      return;
+    }
+
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Jetzt bezahlen";
+    }
+    throw new Error("payment_failed");
+  }
+
   function bindCheckoutForm() {
     var form = document.getElementById("checkoutForm");
     if (!form) return;
@@ -121,34 +147,36 @@
       }
 
       try {
-        var cart = readCart();
         var selected = form.querySelector("input[name='pay']:checked");
         var method = selected ? selected.value : "card";
-        var payload = {
-          qty: cart.qty,
-          method: method
-        };
-
-        var response = await fetch("/create-payment", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        var data = await response.json();
-        if (data && data.checkoutUrl) {
-          window.location.href = data.checkoutUrl;
-          return;
-        }
-
-        throw new Error("payment_failed");
+        await startStripeCheckout(method, submitBtn);
       } catch (error) {
         alert("Zahlung konnte nicht gestartet werden. Bitte versuche es erneut.");
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = "Jetzt bezahlen";
-        }
       }
+    });
+  }
+
+  function bindDirectStripeCheckout() {
+    var directButtons = document.querySelectorAll(".js-start-stripe-checkout");
+    if (!directButtons.length) return;
+
+    directButtons.forEach(function (btn) {
+      btn.addEventListener("click", async function (event) {
+        event.preventDefault();
+        var originalText = btn.textContent;
+        btn.textContent = "Weiterleiten...";
+        btn.classList.add("disabled");
+        btn.setAttribute("aria-disabled", "true");
+
+        try {
+          await startStripeCheckout("card");
+        } catch (error) {
+          btn.textContent = originalText;
+          btn.classList.remove("disabled");
+          btn.setAttribute("aria-disabled", "false");
+          alert("Zahlung konnte nicht gestartet werden. Bitte versuche es erneut.");
+        }
+      });
     });
   }
 
@@ -160,5 +188,6 @@
   updateDrawer();
   updateCheckoutSummary();
   bindCheckoutForm();
+  bindDirectStripeCheckout();
   clearCartOnThankYou();
 })();

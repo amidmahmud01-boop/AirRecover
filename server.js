@@ -93,7 +93,7 @@ app.post("/create-payment", async (req, res) => {
       payment_method_types: [paymentMethodType],
       line_items: lineItems,
       success_url: `${PUBLIC_URL}/thankyou.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${PUBLIC_URL}/checkout.html?cancelled=1`,
+      cancel_url: `/?cancelled=1`,
       metadata: {
         qty: String(qty),
         selected_method: paymentMethodType
