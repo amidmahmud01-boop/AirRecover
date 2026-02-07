@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AirRecover – Checkout</title>
-  <meta name="description" content="AirRecover Checkout – sichere Bestellung." />
+  <title>AirRecover - Checkout</title>
+  <meta name="description" content="AirRecover Checkout - sichere Bestellung." />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -19,7 +19,7 @@
         <a href="index.html#benefits">Vorteile</a>
         <a href="index.html#faq">FAQ</a>
       </nav>
-      <a class="btn btn-ghost" href="index.html">Zurück zur Produktseite</a>
+      <a class="btn btn-ghost" href="index.html">Zuruck zur Produktseite</a>
     </div>
   </header>
 
@@ -28,43 +28,19 @@
       <div class="container checkout-page">
         <div>
           <h1>Checkout</h1>
-          <p class="muted">Bitte fülle deine Daten aus, damit wir liefern können.</p>
-          <form class="checkout-form" id="checkoutForm">
-            <label>
-              Voller Name
-              <input type="text" placeholder="Max Mustermann" required />
-            </label>
-            <label>
-              E-Mail
-              <input type="email" placeholder="max@mail.de" required />
-            </label>
-            <label>
-              Strasse und Hausnummer
-              <input type="text" placeholder="Beispielstrasse 12" required />
-            </label>
-            <label>
-              Stadt
-              <input type="text" placeholder="Zürich" required />
-            </label>
-            <label>
-              Postleitzahl
-              <input type="text" placeholder="8000" required />
-            </label>
-            <label>
-              Land
-              <input type="text" placeholder="Schweiz" required />
-            </label>
+          <p class="muted">Du wirst auf die sichere Stripe-Zahlungsseite weitergeleitet.</p>
+          <form class="checkout-form checkout-hosted" id="checkoutForm">
             <div class="checkout-pay">
               <span>Zahlungsart</span>
-              <label><input type="radio" name="pay" value="card" checked /> Karte</label>
+              <label><input type="radio" name="pay" value="card" checked /> Karte / Apple Pay</label>
               <label><input type="radio" name="pay" value="twint" /> TWINT</label>
               <label><input type="radio" name="pay" value="paypal" /> PayPal</label>
             </div>
-            <button class="btn btn-primary" type="submit">Jetzt bezahlen</button>
+            <button class="btn btn-primary" type="submit">Weiter zu Stripe Checkout</button>
           </form>
         </div>
         <aside class="cart-summary">
-          <h3>Bestellübersicht</h3>
+          <h3>Bestellubersicht</h3>
           <div class="summary-row">
             <span>AirRecover Starter-Set</span>
             <span id="summarySubtotal">CHF 5.95</span>
@@ -98,12 +74,12 @@
           <span class="brand-mark">AR</span>
           <span class="brand-name">AirRecover</span>
         </div>
-        <p>Für freie Nasenatmung – Tag und Nacht.</p>
+        <p>Fur freie Nasenatmung - Tag und Nacht.</p>
       </div>
       <div class="footer-links">
         <a href="#">Kontakt</a>
         <a href="#">Versand</a>
-        <a href="#">Rückerstattungen</a>
+        <a href="#">Ruckerstattungen</a>
         <a href="#">Impressum</a>
       </div>
     </div>

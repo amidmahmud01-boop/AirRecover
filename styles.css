@@ -987,3 +987,23 @@ a {
     align-items: flex-start;
   }
 }
+
+/* Stripe hosted checkout handoff */
+.checkout-hosted {
+  grid-template-columns: 1fr;
+  gap: 14px;
+  max-width: 560px;
+}
+
+.checkout-hosted .checkout-pay {
+  grid-column: 1;
+  background: #f7f9fc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.checkout-hosted .btn {
+  grid-column: 1;
+  justify-self: start;
+}
