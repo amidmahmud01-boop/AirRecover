@@ -1,6 +1,7 @@
 const path = require("path");
 const express = require("express");
 const Stripe = require("stripe");
+const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 const app = express();
@@ -8,6 +9,13 @@ const PORT = process.env.PORT || 3000;
 const PUBLIC_URL = process.env.PUBLIC_URL || `http://localhost:${PORT}`;
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
+
+const CONTACT_RECEIVER_EMAIL = process.env.CONTACT_RECEIVER_EMAIL || "airrecover@gmail.com";
+const SMTP_HOST = process.env.SMTP_HOST || "smtp.gmail.com";
+const SMTP_PORT = parseInt(process.env.SMTP_PORT || "465", 10);
+const SMTP_SECURE = (process.env.SMTP_SECURE || "true") === "true";
+const SMTP_USER = process.env.SMTP_USER;
+const SMTP_PASS = process.env.SMTP_PASS;
 
 if (!STRIPE_SECRET_KEY) {
   console.error("Missing STRIPE_SECRET_KEY in .env");
@@ -48,6 +56,58 @@ app.post(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
+
+app.post("/contact", async (req, res) => {
+  try {
+    const name = (req.body.name || "").toString().trim();
+    const email = (req.body.email || "").toString().trim();
+    const order = (req.body.order || "").toString().trim();
+    const message = (req.body.message || "").toString().trim();
+
+    if (!name || !email || !message) {
+      return res.status(400).json({ error: "missing_fields" });
+    }
+
+    if (!SMTP_USER || !SMTP_PASS) {
+      return res.status(500).json({ error: "smtp_not_configured" });
+    }
+
+    const transporter = nodemailer.createTransport({
+      host: SMTP_HOST,
+      port: SMTP_PORT,
+      secure: SMTP_SECURE,
+      auth: {
+        user: SMTP_USER,
+        pass: SMTP_PASS
+      }
+    });
+
+    const safeMessageHtml = message.replace(/\r?\n/g, "<br>");
+    const orderText = order || "-";
+
+    await transporter.sendMail({
+      from: `"AirRecover Kontakt" <${SMTP_USER}>`,
+      to: CONTACT_RECEIVER_EMAIL,
+      replyTo: email,
+      subject: "Neue Kontaktanfrage von airrecover.ch",
+      text:
+        `Name: ${name}\n` +
+        `E-Mail: ${email}\n` +
+        `Bestellnummer: ${orderText}\n\n` +
+        `Nachricht:\n${message}`,
+      html:
+        `<p><strong>Name:</strong> ${name}</p>` +
+        `<p><strong>E-Mail:</strong> ${email}</p>` +
+        `<p><strong>Bestellnummer:</strong> ${orderText}</p>` +
+        `<p><strong>Nachricht:</strong><br>${safeMessageHtml}</p>`
+    });
+
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error("Contact form send failed:", error.message);
+    return res.status(500).json({ error: "send_failed" });
+  }
+});
 
 app.post("/create-payment", async (req, res) => {
   try {
@@ -93,7 +153,7 @@ app.post("/create-payment", async (req, res) => {
       payment_method_types: [paymentMethodType],
       line_items: lineItems,
       success_url: `${PUBLIC_URL}/thankyou.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `/?cancelled=1`,
+      cancel_url: `${PUBLIC_URL}/?cancelled=1`,
       metadata: {
         qty: String(qty),
         selected_method: paymentMethodType

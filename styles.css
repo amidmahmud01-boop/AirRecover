@@ -1126,3 +1126,17 @@ a {
     top: auto;
   }
 }
+
+.contact-form-message {
+  margin: 6px 0 0;
+  min-height: 24px;
+  font-weight: 600;
+}
+
+.contact-form-message.is-success {
+  color: #1c6b3c;
+}
+
+.contact-form-message.is-error {
+  color: #b42318;
+}

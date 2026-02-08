@@ -201,6 +201,70 @@
     });
   }
 
+  function bindContactForm() {
+    var form = document.getElementById("contactForm");
+    if (!form) return;
+
+    var message = document.getElementById("contactFormMessage");
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      var submitBtn = form.querySelector("button[type='submit']");
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Senden...";
+      }
+
+      if (message) {
+        message.textContent = "";
+        message.classList.remove("is-success");
+        message.classList.remove("is-error");
+      }
+
+      try {
+        var payload = {
+          name: (document.getElementById("contactName") || {}).value || "",
+          email: (document.getElementById("contactEmail") || {}).value || "",
+          order: (document.getElementById("contactOrder") || {}).value || "",
+          message: (document.getElementById("contactMessage") || {}).value || ""
+        };
+
+        var response = await fetch("/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error("contact_send_failed");
+        }
+
+        if (message) {
+          message.textContent = "Danke! Deine Nachricht wurde gesendet.";
+          message.classList.add("is-success");
+        }
+
+        form.reset();
+      } catch (error) {
+        if (message) {
+          message.textContent = "Senden fehlgeschlagen. Bitte versuche es erneut.";
+          message.classList.add("is-error");
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Nachricht senden";
+        }
+      }
+    });
+  }
+
   function clearCartOnThankYou() {
     if (!document.getElementById("thankyou")) return;
     localStorage.removeItem(storageKey);
@@ -211,5 +275,6 @@
   bindCheckoutForm();
   bindDirectStripeCheckout();
   bindNewsletterForm();
+  bindContactForm();
   clearCartOnThankYou();
 })();
