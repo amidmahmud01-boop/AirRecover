@@ -2,7 +2,10 @@ const path = require("path");
 const express = require("express");
 const Stripe = require("stripe");
 const nodemailer = require("nodemailer");
+const dns = require("dns");
 require("dotenv").config();
+
+dns.setDefaultResultOrder("ipv4first");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +19,7 @@ const SMTP_PORT = parseInt(process.env.SMTP_PORT || "465", 10);
 const SMTP_SECURE = (process.env.SMTP_SECURE || "true") === "true";
 const SMTP_USER = process.env.SMTP_USER;
 const SMTP_PASS = process.env.SMTP_PASS;
+const SMTP_FAMILY = parseInt(process.env.SMTP_FAMILY || "4", 10);
 
 if (!STRIPE_SECRET_KEY) {
   console.error("Missing STRIPE_SECRET_KEY in .env");
@@ -76,6 +80,10 @@ app.post("/contact", async (req, res) => {
       host: SMTP_HOST,
       port: SMTP_PORT,
       secure: SMTP_SECURE,
+      family: SMTP_FAMILY,
+      connectionTimeout: 20000,
+      greetingTimeout: 20000,
+      socketTimeout: 30000,
       auth: {
         user: SMTP_USER,
         pass: SMTP_PASS
@@ -112,6 +120,15 @@ app.post("/contact", async (req, res) => {
 
     if (error.code === "EAUTH") {
       return res.status(500).json({ error: "smtp_auth_failed" });
+    }
+
+    if (
+      error.code === "ENETUNREACH" ||
+      error.code === "ETIMEDOUT" ||
+      error.code === "EHOSTUNREACH" ||
+      error.code === "ECONNREFUSED"
+    ) {
+      return res.status(500).json({ error: "smtp_network_error" });
     }
 
     return res.status(500).json({ error: "send_failed" });
