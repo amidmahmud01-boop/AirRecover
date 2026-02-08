@@ -201,6 +201,19 @@
     });
   }
 
+  function getContactErrorMessage(errorCode) {
+    if (errorCode === "smtp_not_configured") {
+      return "E-Mail-Versand ist noch nicht eingerichtet (Render SMTP-Variablen fehlen).";
+    }
+    if (errorCode === "smtp_auth_failed") {
+      return "SMTP-Anmeldung fehlgeschlagen. Bitte Gmail App-Passwort in Render prüfen.";
+    }
+    if (errorCode === "missing_fields") {
+      return "Bitte alle Pflichtfelder ausfüllen.";
+    }
+    return "Senden fehlgeschlagen. Bitte versuche es erneut.";
+  }
+
   function bindContactForm() {
     var form = document.getElementById("contactForm");
     if (!form) return;
@@ -241,8 +254,15 @@
           body: JSON.stringify(payload)
         });
 
+        var data = null;
+        try {
+          data = await response.json();
+        } catch (e) {
+          data = null;
+        }
+
         if (!response.ok) {
-          throw new Error("contact_send_failed");
+          throw new Error((data && data.error) || "contact_send_failed");
         }
 
         if (message) {
@@ -253,7 +273,7 @@
         form.reset();
       } catch (error) {
         if (message) {
-          message.textContent = "Senden fehlgeschlagen. Bitte versuche es erneut.";
+          message.textContent = getContactErrorMessage(error.message);
           message.classList.add("is-error");
         }
       } finally {

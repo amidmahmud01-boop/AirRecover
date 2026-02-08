@@ -104,7 +104,16 @@ app.post("/contact", async (req, res) => {
 
     return res.json({ ok: true });
   } catch (error) {
-    console.error("Contact form send failed:", error.message);
+    console.error("Contact form send failed:", {
+      message: error.message,
+      code: error.code || null,
+      responseCode: error.responseCode || null
+    });
+
+    if (error.code === "EAUTH") {
+      return res.status(500).json({ error: "smtp_auth_failed" });
+    }
+
     return res.status(500).json({ error: "send_failed" });
   }
 });
