@@ -329,14 +329,11 @@ a {
 }
 
 .cart-thumb {
-  height: 96px;
+  width: 100px;
+  height: 100px;
   border-radius: 12px;
-  background: linear-gradient(140deg, #e6f2ef, #f6f7f8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--muted);
-  font-weight: 600;
+  object-fit: cover;
+  display: block;
 }
 
 .cart-info h3 {
