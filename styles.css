@@ -495,10 +495,11 @@ a {
 }
 
 .product-image {
-  height: 240px;
+  width: min(100%, 260px);
+  aspect-ratio: 3 / 4;
   border-radius: 14px;
   background: #f6f8fb;
-  margin-bottom: 16px;
+  margin: 0 auto 16px;
   overflow: hidden;
 }
 
