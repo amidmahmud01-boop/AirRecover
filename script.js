@@ -209,7 +209,7 @@
       return "SMTP-Anmeldung fehlgeschlagen. Bitte Gmail App-Passwort in Render prüfen.";
     }
     if (errorCode === "smtp_network_error") {
-      return "SMTP-Verbindung von Render zu Gmail nicht möglich. Wir stellen auf API-Versand um.";
+      return "SMTP-Verbindung fehlgeschlagen. Bitte setze in Render SMTP_PORT=587 und SMTP_SECURE=false.";
     }
     if (errorCode === "missing_fields") {
       return "Bitte alle Pflichtfelder ausfüllen.";
