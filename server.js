@@ -1,11 +1,7 @@
 const path = require("path");
 const express = require("express");
 const Stripe = require("stripe");
-const nodemailer = require("nodemailer");
-const dns = require("dns");
 require("dotenv").config();
-
-dns.setDefaultResultOrder("ipv4first");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,12 +10,8 @@ const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
 const CONTACT_RECEIVER_EMAIL = process.env.CONTACT_RECEIVER_EMAIL || "airrecover@gmail.com";
-const SMTP_HOST = process.env.SMTP_HOST || "smtp.gmail.com";
-const SMTP_PORT = parseInt(process.env.SMTP_PORT || "587", 10);
-const SMTP_SECURE = (process.env.SMTP_SECURE || "false") === "true";
-const SMTP_USER = process.env.SMTP_USER;
-const SMTP_PASS = process.env.SMTP_PASS;
-const SMTP_FAMILY = parseInt(process.env.SMTP_FAMILY || "4", 10);
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const RESEND_FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
 
 if (!STRIPE_SECRET_KEY) {
   console.error("Missing STRIPE_SECRET_KEY in .env");
@@ -29,49 +21,42 @@ const stripe = new Stripe(STRIPE_SECRET_KEY || "", {
   apiVersion: "2024-06-20"
 });
 
-function isSmtpNetworkError(error) {
-  return ["ENETUNREACH", "ETIMEDOUT", "EHOSTUNREACH", "ECONNREFUSED", "ESOCKET"].includes(error.code);
-}
+async function sendContactWithResend(mail) {
+  if (!RESEND_API_KEY) {
+    const err = new Error("Resend API key missing");
+    err.code = "RESEND_NOT_CONFIGURED";
+    throw err;
+  }
 
-function createTransport(port, secure) {
-  return nodemailer.createTransport({
-    host: SMTP_HOST,
-    port: port,
-    secure: secure,
-    family: SMTP_FAMILY,
-    connectionTimeout: 20000,
-    greetingTimeout: 20000,
-    socketTimeout: 30000,
-    auth: {
-      user: SMTP_USER,
-      pass: SMTP_PASS
-    }
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${RESEND_API_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      from: RESEND_FROM_EMAIL,
+      to: [CONTACT_RECEIVER_EMAIL],
+      reply_to: mail.replyTo,
+      subject: mail.subject,
+      html: mail.html,
+      text: mail.text
+    })
   });
-}
 
-async function sendContactMail(mailOptions) {
-  const primary = { port: SMTP_PORT, secure: SMTP_SECURE };
-  const fallback =
-    SMTP_PORT === 465
-      ? { port: 587, secure: false }
-      : { port: 465, secure: true };
-
-  try {
-    await createTransport(primary.port, primary.secure).sendMail(mailOptions);
-    return;
-  } catch (primaryError) {
-    if (!isSmtpNetworkError(primaryError)) {
-      throw primaryError;
+  if (!response.ok) {
+    let payload = null;
+    try {
+      payload = await response.json();
+    } catch (e) {
+      payload = null;
     }
 
-    console.warn("Primary SMTP failed, trying fallback:", {
-      primary: primary,
-      fallback: fallback,
-      code: primaryError.code,
-      message: primaryError.message
-    });
-
-    await createTransport(fallback.port, fallback.secure).sendMail(mailOptions);
+    const err = new Error("Resend send failed");
+    err.code = "RESEND_SEND_FAILED";
+    err.status = response.status;
+    err.payload = payload;
+    throw err;
   }
 }
 
@@ -118,16 +103,10 @@ app.post("/contact", async (req, res) => {
       return res.status(400).json({ error: "missing_fields" });
     }
 
-    if (!SMTP_USER || !SMTP_PASS) {
-      return res.status(500).json({ error: "smtp_not_configured" });
-    }
-
     const safeMessageHtml = message.replace(/\r?\n/g, "<br>");
     const orderText = order || "-";
 
-    const mailOptions = {
-      from: `"AirRecover Kontakt" <${SMTP_USER}>`,
-      to: CONTACT_RECEIVER_EMAIL,
+    await sendContactWithResend({
       replyTo: email,
       subject: "Neue Kontaktanfrage von airrecover.ch",
       text:
@@ -140,23 +119,23 @@ app.post("/contact", async (req, res) => {
         `<p><strong>E-Mail:</strong> ${email}</p>` +
         `<p><strong>Bestellnummer:</strong> ${orderText}</p>` +
         `<p><strong>Nachricht:</strong><br>${safeMessageHtml}</p>`
-    };
+    });
 
-    await sendContactMail(mailOptions);
     return res.json({ ok: true });
   } catch (error) {
     console.error("Contact form send failed:", {
       message: error.message,
       code: error.code || null,
-      responseCode: error.responseCode || null
+      status: error.status || null,
+      payload: error.payload || null
     });
 
-    if (error.code === "EAUTH") {
-      return res.status(500).json({ error: "smtp_auth_failed" });
+    if (error.code === "RESEND_NOT_CONFIGURED") {
+      return res.status(500).json({ error: "resend_not_configured" });
     }
 
-    if (isSmtpNetworkError(error)) {
-      return res.status(500).json({ error: "smtp_network_error" });
+    if (error.code === "RESEND_SEND_FAILED") {
+      return res.status(500).json({ error: "resend_send_failed" });
     }
 
     return res.status(500).json({ error: "send_failed" });

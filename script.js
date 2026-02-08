@@ -202,14 +202,11 @@
   }
 
   function getContactErrorMessage(errorCode) {
-    if (errorCode === "smtp_not_configured") {
-      return "E-Mail-Versand ist noch nicht eingerichtet (Render SMTP-Variablen fehlen).";
+    if (errorCode === "resend_not_configured") {
+      return "E-Mail-Versand ist noch nicht eingerichtet (RESEND_API_KEY fehlt in Render).";
     }
-    if (errorCode === "smtp_auth_failed") {
-      return "SMTP-Anmeldung fehlgeschlagen. Bitte Gmail App-Passwort in Render prüfen.";
-    }
-    if (errorCode === "smtp_network_error") {
-      return "SMTP-Verbindung fehlgeschlagen. Bitte setze in Render SMTP_PORT=587 und SMTP_SECURE=false.";
+    if (errorCode === "resend_send_failed") {
+      return "E-Mail-Versand über Resend fehlgeschlagen. Bitte Absenderadresse/Domain prüfen.";
     }
     if (errorCode === "missing_fields") {
       return "Bitte alle Pflichtfelder ausfüllen.";
