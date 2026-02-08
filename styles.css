@@ -329,8 +329,8 @@ a {
 }
 
 .cart-thumb {
-  width: 100px;
-  height: 100px;
+  width: 112px;
+  height: 112px;
   border-radius: 12px;
   object-fit: cover;
   display: block;
@@ -1018,8 +1018,8 @@ a {
 
 .product-image-pack img {
   object-fit: contain;
-  width: 84%;
-  height: 84%;
+  width: 90%;
+  height: 90%;
   padding: 0;
 }
 
