@@ -180,6 +180,27 @@
     });
   }
 
+  function bindNewsletterForm() {
+    var form = document.getElementById("newsletterForm");
+    if (!form) return;
+
+    var message = document.getElementById("newsletterMessage");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      if (message) {
+        message.textContent = "Vielen Dank, du bist für den Newsletter nun angemeldet.";
+      }
+
+      form.reset();
+    });
+  }
+
   function clearCartOnThankYou() {
     if (!document.getElementById("thankyou")) return;
     localStorage.removeItem(storageKey);
@@ -189,5 +210,6 @@
   updateCheckoutSummary();
   bindCheckoutForm();
   bindDirectStripeCheckout();
+  bindNewsletterForm();
   clearCartOnThankYou();
 })();

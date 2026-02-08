@@ -297,10 +297,11 @@
         <h3>Newsletter</h3>
         <p class="muted">Erhalte Updates, Aktionen und hilfreiche Tipps.</p>
       </div>
-      <form class="newsletter-form">
-        <input type="email" placeholder="Deine E-Mail-Adresse" />
+      <form class="newsletter-form" id="newsletterForm">
+        <input id="newsletterEmail" name="email" type="email" placeholder="Deine E-Mail-Adresse" required />
         <button class="btn btn-primary" type="submit">Abonnieren</button>
       </form>
+      <p class="newsletter-message" id="newsletterMessage" aria-live="polite"></p>
     </div>
   </footer>
   <script src="script.js"></script>

@@ -675,6 +675,13 @@ a {
   font-family: var(--font);
 }
 
+.newsletter-message {
+  margin: 8px 0 0;
+  color: var(--primary-2);
+  font-weight: 600;
+  min-height: 24px;
+}
+
 .checkout-page {
   display: grid;
   grid-template-columns: 1.4fr 0.8fr;
