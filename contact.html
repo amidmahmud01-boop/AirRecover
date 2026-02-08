@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AirRecover - Kontakt</title>
+  <meta name="description" content="Kontaktseite von AirRecover. Erreiche unser Support-Team bei Fragen zu Bestellung, Versand und Produkt." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="index.html#top" aria-label="Zur Startseite">
+        <span class="brand-mark">AR</span>
+        <span class="brand-name">AirRecover</span>
+      </a>
+      <nav class="nav">
+        <a href="index.html#top">Shop</a>
+        <a href="index.html#product">Produkt</a>
+        <a href="index.html#benefits">Vorteile</a>
+        <a href="index.html#faq">FAQ</a>
+        <a href="contact.html" aria-current="page">Kontakt</a>
+      </nav>
+      <a class="btn btn-ghost" href="index.html">Zurück zur Produktseite</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section alt contact-hero">
+      <div class="container">
+        <p class="eyebrow">AirRecover Support</p>
+        <h1>Kontakt</h1>
+        <p class="lead">Wir antworten in der Regel innerhalb von 24 Stunden an Werktagen.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container contact-layout">
+        <article class="contact-card">
+          <h2>Schreib uns eine Nachricht</h2>
+          <p class="muted">Bei Bestellfragen bitte wenn möglich die Bestellnummer angeben.</p>
+          <form class="contact-form" action="mailto:support@airrecover.ch" method="post" enctype="text/plain">
+            <label for="contactName">Voller Name</label>
+            <input id="contactName" name="name" type="text" required />
+
+            <label for="contactEmail">E-Mail</label>
+            <input id="contactEmail" name="email" type="email" required />
+
+            <label for="contactOrder">Bestellnummer (optional)</label>
+            <input id="contactOrder" name="order" type="text" />
+
+            <label for="contactMessage">Nachricht</label>
+            <textarea id="contactMessage" name="message" rows="6" required></textarea>
+
+            <button class="btn btn-primary" type="submit">Nachricht senden</button>
+          </form>
+        </article>
+
+        <aside class="contact-card contact-side">
+          <h2>Direkter Kontakt</h2>
+          <ul class="contact-list">
+            <li><strong>E-Mail:</strong> <a href="mailto:support@airrecover.ch">support@airrecover.ch</a></li>
+            <li><strong>Antwortzeit:</strong> Montag bis Freitag, 24h</li>
+            <li><strong>Versand:</strong> Schweizweit in 1 bis 2 Werktagen</li>
+          </ul>
+
+          <div class="contact-note">
+            <h3>Häufige Themen</h3>
+            <p>Lieferstatus, Rückerstattung, Produktanwendung und Zahlungsfragen.</p>
+            <a class="btn btn-ghost" href="index.html#faq">FAQ öffnen</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand">
+          <span class="brand-mark">AR</span>
+          <span class="brand-name">AirRecover</span>
+        </div>
+        <p>Für freie Nasenatmung - Tag und Nacht.</p>
+      </div>
+      <div class="footer-links">
+        <a href="contact.html">Kontakt</a>
+        <a href="#">Versand</a>
+        <a href="#">Rückerstattungen</a>
+        <a href="#">Impressum</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
