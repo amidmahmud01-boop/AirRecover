@@ -146,7 +146,7 @@ app.post("/create-payment", async (req, res) => {
   try {
     const qty = Math.max(1, parseInt(req.body.qty, 10) || 1);
     const method = (req.body.method || "card").toString().toLowerCase();
-    const shipping = qty >= 2 ? 0 : 3.95;
+    const shipping = qty >= 2 ? 0 : 2.95;
 
     const methodMap = {
       card: "card",
@@ -175,7 +175,7 @@ app.post("/create-payment", async (req, res) => {
           product_data: {
             name: "Versand"
           },
-          unit_amount: 395
+          unit_amount: 295
         },
         quantity: 1
       });

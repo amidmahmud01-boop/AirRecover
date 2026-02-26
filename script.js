@@ -7,11 +7,11 @@
 
   function readCart() {
     var raw = localStorage.getItem(storageKey);
-    if (!raw) return { qty: 1, subtotal: 5.95, shipping: 3.95, total: 9.90 };
+    if (!raw) return { qty: 1, subtotal: 5.95, shipping: 2.95, total: 8.90 };
     try {
       return JSON.parse(raw);
     } catch (e) {
-      return { qty: 1, subtotal: 5.95, shipping: 3.95, total: 9.90 };
+      return { qty: 1, subtotal: 5.95, shipping: 2.95, total: 8.90 };
     }
   }
 
@@ -35,7 +35,7 @@
 
     function updateTotals(qty) {
       var subtotal = unitPrice * qty;
-      var shipping = qty >= 2 ? 0 : 3.95;
+      var shipping = qty >= 2 ? 0 : 2.95;
       var total = subtotal + shipping;
       var next = { qty: qty, subtotal: subtotal, shipping: shipping, total: total };
 
