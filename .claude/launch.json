@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "airrecover-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "airrecover-dev-3100",
+      "runtimeExecutable": "env",
+      "runtimeArgs": ["PORT=3100", "node", "server.js"],
+      "port": 3100
+    }
+  ]
+}

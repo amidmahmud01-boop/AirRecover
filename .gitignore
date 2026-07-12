@@ -1,1 +1,12 @@
+# Secrets — never commit (covers .env, ".env 2" iCloud copies, .env.local, …)
+.env*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# OS / editor cruft & iCloud conflict copies
 .DS_Store
+**/.DS_Store
+*\ 2
+*\ 2.*

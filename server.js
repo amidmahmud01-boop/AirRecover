@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 3000;
 const PUBLIC_URL = process.env.PUBLIC_URL || `http://localhost:${PORT}`;
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
+const STRIPE_PRICE_ID = process.env.STRIPE_PRICE_ID || "price_1SyJraFo5lKRRLy2N0530BiU";
 
 const CONTACT_RECEIVER_EMAIL = process.env.CONTACT_RECEIVER_EMAIL || "airrecover@gmail.com";
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -157,34 +158,32 @@ app.post("/create-payment", async (req, res) => {
 
     const lineItems = [
       {
-        price_data: {
-          currency: "chf",
-          product_data: {
-            name: "AirRecover Starter-Set"
-          },
-          unit_amount: 595
-        },
+        price: STRIPE_PRICE_ID,
         quantity: qty
       }
     ];
 
-    if (shipping > 0) {
-      lineItems.push({
-        price_data: {
-          currency: "chf",
-          product_data: {
-            name: "Versand"
-          },
-          unit_amount: 295
-        },
-        quantity: 1
-      });
-    }
+    const shippingOptions = [
+      {
+        shipping_rate_data: {
+          type: "fixed_amount",
+          display_name: shipping > 0 ? "Versand" : "Gratisversand",
+          fixed_amount: {
+            amount: Math.round(shipping * 100),
+            currency: "chf"
+          }
+        }
+      }
+    ];
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: [paymentMethodType],
       line_items: lineItems,
+      shipping_options: shippingOptions,
+      shipping_address_collection: {
+        allowed_countries: ["CH", "LI"]
+      },
       success_url: `${PUBLIC_URL}/thankyou.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${PUBLIC_URL}/?cancelled=1`,
       metadata: {
