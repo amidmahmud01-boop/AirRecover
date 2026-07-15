@@ -590,11 +590,11 @@ img {
 }
 
 .cart-thumb {
-  width: 96px;
-  height: 96px;
+  width: 112px;
+  height: 112px;
   border-radius: 12px;
-  object-fit: contain;
-  background: var(--sky-soft);
+  object-fit: cover;
+  background: var(--white);
   display: block;
 }
 
