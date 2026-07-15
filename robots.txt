@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /thankyou.html
+
+Sitemap: https://airrecover.ch/sitemap.xml
