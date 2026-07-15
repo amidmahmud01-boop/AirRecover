@@ -1036,6 +1036,20 @@ img {
     position: static;
     top: auto;
   }
+
+  .cart-cta {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .cart-cta-img {
+    width: 100%;
+    align-self: center;
+  }
+
+  .cart-cta .btn {
+    text-align: center;
+  }
 }
 
 @media (max-width: 640px) {
